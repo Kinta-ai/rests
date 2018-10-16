@@ -107,6 +107,8 @@ class TypeTranspiler(object):
         print("Getting atomic type for ", type_)
         for atomic_type in cls.ATOMIC_TYPES:
             print('isinstance with', atomic_type)
+            if atomic_type is None:
+                continue # Can't do isinstance checks with None which is an atomic type
             if isinstance(type_, atomic_type):
                 return type_
         raise TranspileError("Unable to find an atomic type for {}".format(type_))
