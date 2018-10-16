@@ -104,7 +104,9 @@ class TypeTranspiler(object):
         Atomic types can be subclasses of other types. Loop through the array of atomic classes
         and find the first class that this is either an instance of, or a subclass of.
         """
+        print("Getting atomic type for ", type_)
         for atomic_type in cls.ATOMIC_TYPES:
+            print('isinstance with', atomic_type)
             if isinstance(type_, atomic_type):
                 return type_
         raise TranspileError("Unable to find an atomic type for {}".format(type_))
