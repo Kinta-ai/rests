@@ -106,14 +106,14 @@ class TypeTranspiler(object):
         and find the first class that this is either an instance of, or a subclass of.
         """
         print("Getting atomic type for ", type_)
-        for atomic_type in cls.ATOMIC_TYPES:
+        for atomic_type in cls.ATOMIC_TYPES.keys():
             print('isinstance with', atomic_type)
             if atomic_type is None:
                 continue # Can't do isinstance checks with None which is an atomic type
             if isinstance(type_, atomic_type):
                 print("Found atomic type", atomic_type, 'for type', type_)
                 print(type(atomic_type), type(type_))
-                return type(atomic_type)
+                return atomic_type
         raise TranspileError("Unable to find an atomic type for {}".format(type_))
 
     @classmethod
