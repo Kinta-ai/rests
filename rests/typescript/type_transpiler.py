@@ -92,12 +92,12 @@ class TypeTranspiler(object):
             base_type = type(type_)
         if issubclass(base_type, models.Model):
             base_type = models.Model
-
-        atomic_type = cls._get_atomic_type(type_)
-        print("Found atomic type: ", atomic_type, "For base type", type_)
-        if hasattr(cls.ATOMIC_TYPES[atomic_type], "__call__"):
-            return cls.ATOMIC_TYPES[atomic_type](type_)
-        return cls.ATOMIC_TYPES[atomic_type]
+        print(base_type)
+        # atomic_type = cls._get_atomic_type(type_)
+        # print("Found atomic type: ", atomic_type, "For base type", type_)
+        if hasattr(cls.ATOMIC_TYPES[base_type], "__call__"):
+            return cls.ATOMIC_TYPES[base_type](type_)
+        return cls.ATOMIC_TYPES[base_type]
 
     @classmethod
     def _get_atomic_type(cls, type_):
