@@ -93,7 +93,7 @@ class TypeTranspiler(object):
         if issubclass(base_type, models.Model):
             base_type = models.Model
         else:
-            base_type = cls._get_atomic_type(base_type)
+            base_type = cls._get_atomic_type(type_)
 
         if hasattr(cls.ATOMIC_TYPES[base_type], "__call__"):
             return cls.ATOMIC_TYPES[base_type](type_)
