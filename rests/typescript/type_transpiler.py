@@ -7,6 +7,7 @@ from django.db.models import lookups
 from django.db.models.fields import related_lookups
 from django.contrib.postgres.fields import JSONField, ArrayField
 
+from rests.core.exceptions import TranspileError
 from rests.core.utils.typing_inspect import get_origin, get_args
 from rests.typescript import types
 
@@ -91,9 +92,22 @@ class TypeTranspiler(object):
             base_type = type(type_)
         if issubclass(base_type, models.Model):
             base_type = models.Model
-        if hasattr(cls.ATOMIC_TYPES[base_type], "__call__"):
-            return cls.ATOMIC_TYPES[base_type](type_)
-        return cls.ATOMIC_TYPES[base_type]
+
+        atomic_type = cls._get_atomic_type(type_)
+        if hasattr(cls.ATOMIC_TYPES[atomic_type], "__call__"):
+            return cls.ATOMIC_TYPES[atomic_type](type_)
+        return cls.ATOMIC_TYPES[atomic_type]
+
+    @classmethod
+    def _get_atomic_type(cls, type_):
+        """
+        Atomic types can be subclasses of other types. Loop through the array of atomic classes
+        and find the first class that this is either an instance of, or a subclass of.
+        """
+        for atomic_type in cls.ATOMIC_TYPES:
+            if isinstance(type_, atomic_type):
+                return type_
+        raise TranspileError("Unable to find an atomic type for {}".format(type_))
 
     @classmethod
     def _transpile(cls, type_):
