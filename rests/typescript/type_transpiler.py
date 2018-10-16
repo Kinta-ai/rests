@@ -92,12 +92,12 @@ class TypeTranspiler(object):
             base_type = type(type_)
         if issubclass(base_type, models.Model):
             base_type = models.Model
-        print(base_type)
-        atomic_type = cls._get_atomic_type(type_)
-        print("Found atomic type: ", atomic_type, "For base type", type_)
-        if hasattr(cls.ATOMIC_TYPES[atomic_type], "__call__"):
-            return cls.ATOMIC_TYPES[atomic_type](type_)
-        return cls.ATOMIC_TYPES[atomic_type]
+        else:
+            base_type = cls._get_atomic_type(base_type)
+
+        if hasattr(cls.ATOMIC_TYPES[base_type], "__call__"):
+            return cls.ATOMIC_TYPES[base_type](type_)
+        return cls.ATOMIC_TYPES[base_type]
 
     @classmethod
     def _get_atomic_type(cls, type_):
@@ -105,14 +105,10 @@ class TypeTranspiler(object):
         Atomic types can be subclasses of other types. Loop through the array of atomic classes
         and find the first class that this is either an instance of, or a subclass of.
         """
-        print("Getting atomic type for ", type_)
         for atomic_type in cls.ATOMIC_TYPES.keys():
-            print('isinstance with', atomic_type)
             if atomic_type is None:
-                continue # Can't do isinstance checks with None which is an atomic type
+                continue # Can't do isinstance checks with None which is an atomic type. Python throws an error.
             if isinstance(type_, atomic_type):
-                print("Found atomic type", atomic_type, 'for type', type_)
-                print(type(atomic_type), type(type_))
                 return atomic_type
         raise TranspileError("Unable to find an atomic type for {}".format(type_))
 
