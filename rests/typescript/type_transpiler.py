@@ -35,6 +35,7 @@ class TypeTranspiler(object):
         JSONField: types.OBJECT,
         ArrayField: types.ARRAY,
         models.CharField: types.STRING,
+        models.FileField: types.STRING,
         models.TextField: types.STRING,
         models.UUIDField: types.STRING,
         models.SlugField: types.STRING,
